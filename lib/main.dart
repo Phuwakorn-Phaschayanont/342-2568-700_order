@@ -9,17 +9,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     const String appTitle = 'MIXURY SINCE 2023 ICE CREAM';
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: appTitle,
       home: Scaffold(
         appBar: AppBar(
-          title: const Text(appTitle, style: TextStyle(color: Colors.white)),
+          title: Center(child: const Text(appTitle, style: TextStyle(color: Colors.white))),
           backgroundColor: Colors.red,
         ),
         body: ListView(
-          padding: const EdgeInsets.all(8),
-          children: const <Widget>[
+          padding: const EdgeInsets.all(8), //กำหนดระยะห่างของการ์ดแต่ละอัน
+          children: const <Widget>[ //สร้างการ์ดแต่ละอัน
             Card(
-              child: ListTile(
+              child: ListTile( //การ์ดแต่ละอันจะมีรูปภาพและชื่อไอศกรีม
                 leading: ImageSection(
                   image: 'images/vanilla.jpg'
                 ),
@@ -49,7 +50,7 @@ class MyApp extends StatelessWidget {
                 ),
                 title: TitleSection(
                   name: 'Mint Choc Chip',
-                  price: '฿ 50.00'))),
+                  price: '฿ 60.00'))),
             Card(
               child: ListTile(
                 leading: ImageSection(
@@ -65,7 +66,7 @@ class MyApp extends StatelessWidget {
                 ),
                 title: TitleSection(
                   name: 'Coffee',
-                  price: '฿ 40.00'))),
+                  price: '฿ 50.00'))),
             Card(
               child: ListTile(
                 leading: ImageSection(
@@ -81,7 +82,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class ImageSection extends StatelessWidget {
+class ImageSection extends StatelessWidget { //สร้างคลาสสำหรับรูปภาพ
   const ImageSection({super.key, required this.image});
 
   final String image;
@@ -95,7 +96,7 @@ class ImageSection extends StatelessWidget {
   }
 }
 
-class TitleSection extends StatelessWidget {
+class TitleSection extends StatelessWidget { //สร้างคลาสสำหรับชื่อและราคา
   const TitleSection({super.key, required this.name, required this.price});
   final String name;
   final String price;
@@ -123,41 +124,41 @@ class TitleSection extends StatelessWidget {
               ],
             ),
           ),
-          FavoriteWidget(),
+          OrderWidget(),
           /*3*/
           //Icon(Icons.favorite, color: Colors.red[500]),
           //const Padding(padding: EdgeInsets.only(left: 5)),
-          //const Text('11K'),
+          //const Text(''),
         ],
       ),
     );
   }
 }
 
-class FavoriteWidget extends StatefulWidget {
-  const FavoriteWidget({super.key});
+class OrderWidget extends StatefulWidget { //สร้างคลาสสำหรับปุ่มกดอิโมจิ
+  const OrderWidget({super.key});
 
   @override
-  State<FavoriteWidget> createState() => _FavoriteWidgetState();
+  State<OrderWidget> createState() => _OrderWidgetState();
 }
 
-class _FavoriteWidgetState extends State<FavoriteWidget> {
-  bool _isFavorited = false;
-  int _favoriteCount = 0;
-  void _toggleFavorite() { //เมื่อกดหัวใจ จะมาเช็คตรงนี้
+class _OrderWidgetState extends State<OrderWidget> {
+  bool _isOrdered = false;
+  int _orderCount = 0;
+  void _toggleOrder() { //เมื่อกดอิโมจิ จะมาเช็คตรงนี้
     setState(() {
-      if (_isFavorited) {
-        _favoriteCount -= 1;
-        _isFavorited = false;
+      if (_isOrdered) {
+        _orderCount -= 1;
+        _isOrdered = false;
       } else {
-        _favoriteCount += 1;
-        _isFavorited = true;
+        _orderCount += 1;
+        _isOrdered = true;
       }
     });
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) { //สร้างปุ่มกดอิโมจิ
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -167,15 +168,15 @@ class _FavoriteWidgetState extends State<FavoriteWidget> {
             padding: const EdgeInsets.all(0),
             alignment: Alignment.center,
             icon:
-                (_isFavorited
+                (_isOrdered
                     ? const Icon(Icons.task_alt_rounded) //เป็นจริงเอาไปใช้
                     : const Icon(Icons.add) //เป็นเท็จเอาไปใช้
                     ),
-            color: _isFavorited ? Colors.green[500] : Colors.red[500],
-            onPressed: _toggleFavorite, //เมื่อกดจะไปเรียกฟังก์ชันนี้
+            color: _isOrdered ? Colors.green[500] : Colors.red[500],
+            onPressed: _toggleOrder, //เมื่อกดจะไปเรียกฟังก์ชันนี้
           ),
         ),
-        SizedBox(width: 18, child: SizedBox(child: Text('$_favoriteCount')
+        SizedBox(width: 18, child: SizedBox(child: Text('$_orderCount')
         )
       ),
     ],);
