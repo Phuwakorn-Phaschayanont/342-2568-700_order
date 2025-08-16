@@ -143,42 +143,105 @@ class OrderWidget extends StatefulWidget { //สร้างคลาสสำ�
 }
 
 class _OrderWidgetState extends State<OrderWidget> {
-  bool _isOrdered = false;
   int _orderCount = 0;
-  void _toggleOrder() { //เมื่อกดอิโมจิ จะมาเช็คตรงนี้
+  bool _isOrdered = false; // เพิ่มตัวแปรเช็คการสั่งซื้อ
+  
+  void _increaseOrder() { //ปุ่มเพิ่มจำนวนสินค้า
     setState(() {
-      if (_isOrdered) {
+      _orderCount += 1;
+    });
+  }
+
+  void _decreaseOrder() { //ปุ่มลดจำนวนสินค้า
+    setState(() {
+      if (_orderCount > 0) {
         _orderCount -= 1;
-        _isOrdered = false;
-      } else {
-        _orderCount += 1;
-        _isOrdered = true;
       }
     });
   }
 
+  void _placeOrder() { //ปุ่มสั่งซื้อสินค้า
+    if (_orderCount > 0) {
+      setState(() {
+        _isOrdered = true;
+      });
+    }
+  }
+
   @override
-  Widget build(BuildContext context) { //สร้างปุ่มกดอิโมจิ
+  Widget build(BuildContext context) { //สร้างปุ่มเพิ่มลดและสั่งซื้อสินค้า
+    // ถ้าสั่งซื้อแล้ว แสดงไอคอนติ๊กถูก
+    if (_isOrdered) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.check_circle,
+            color: Colors.green[500],
+            size: 30,
+          ),
+          const SizedBox(width: 8),
+          Text(
+            'สั่งแล้ว $_orderCount สกูป',
+            style: TextStyle(
+              color: Colors.green[500],
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      );
+    }
+
+    // ถ้ายังไม่ได้สั่งซื้อ แสดงปุ่มเพิ่ม/ลดและสั่งซื้อ
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
+        // ปุ่มลด
         Container(
           padding: const EdgeInsets.all(0),
           child: IconButton(
             padding: const EdgeInsets.all(0),
             alignment: Alignment.center,
-            icon:
-                (_isOrdered
-                    ? const Icon(Icons.task_alt_rounded) //เป็นจริงเอาไปใช้
-                    : const Icon(Icons.add) //เป็นเท็จเอาไปใช้
-                    ),
-            color: _isOrdered ? Colors.green[500] : Colors.red[500],
-            onPressed: _toggleOrder, //เมื่อกดจะไปเรียกฟังก์ชันนี้
+            icon: const Icon(Icons.remove),
+            color: _orderCount > 0 ? Colors.red[500] : Colors.grey,
+            onPressed: _orderCount > 0 ? _decreaseOrder : null,
           ),
         ),
-        SizedBox(width: 18, child: SizedBox(child: Text('$_orderCount')
-        )
-      ),
-    ],);
+        // แสดงจำนวน
+        SizedBox(
+          width: 30, 
+          child: Text(
+            '$_orderCount',
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          )
+        ),
+        // ปุ่มเพิ่ม
+        Container(
+          padding: const EdgeInsets.all(0),
+          child: IconButton(
+            padding: const EdgeInsets.all(0),
+            alignment: Alignment.center,
+            icon: const Icon(Icons.add),
+            color: Colors.green[500],
+            onPressed: _increaseOrder,
+          ),
+        ),
+        const SizedBox(width: 8),
+        // ปุ่มสั่งซื้อ
+        ElevatedButton(
+          onPressed: _orderCount > 0 ? _placeOrder : null,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.blue[500],
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          ),
+          child: const Text(
+            'สั่งซื้อ',
+            style: TextStyle(fontSize: 12),
+          ),
+        ),
+      ],
+    );
   }
 }
